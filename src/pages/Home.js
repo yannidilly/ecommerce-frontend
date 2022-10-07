@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Header from '../components/Header';
 
 class Home extends React.Component {
   constructor() {
@@ -16,10 +18,11 @@ class Home extends React.Component {
   };
 
   render() {
+    const { history } = this.props;
     const { searchText } = this.state;
     return (
       <section>
-        <h1>HOME</h1>
+        <Header history={ history } />
         <input
           type="text"
           name="search"
@@ -41,4 +44,9 @@ class Home extends React.Component {
   }
 }
 
+Home.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 export default Home;
