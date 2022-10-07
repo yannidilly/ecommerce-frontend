@@ -27,7 +27,14 @@ class Home extends React.Component {
         />
         {
           (searchText.length === 0)
-            ? <p data-testid="home-initial-message">Digite algum termo de pesquisa ou escolha uma categoria.</p> : null
+            ? (
+              <p
+                data-testid="home-initial-message"
+              >
+                Digite algum termo de pesquisa ou escolha uma categoria.
+
+              </p>
+            ) : null
         }
       </section>
     );
