@@ -4,3 +4,13 @@ body {
   margin-left: 20px;
   padding: 0;
 }
+
+.itemDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item {
+  border: 1px solid black;
+  width: 200px;
+}
