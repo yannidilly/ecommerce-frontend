@@ -35,7 +35,10 @@ class App extends React.Component {
         </div>
         <BrowserRouter>
           <Route exact path="/" component={ Home } />
-          <Route path="/shoppingCart" render={ (props) => <ShoppingCart { ...props } /> } />
+          <Route
+            path="/shoppingCart"
+            render={ (props) => <ShoppingCart { ...props } /> }
+          />
         </BrowserRouter>
       </>
 
