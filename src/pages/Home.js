@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 class Home extends React.Component {
   constructor() {
@@ -10,7 +10,14 @@ class Home extends React.Component {
       searchText: '',
       items: [],
       nothing: '',
+      categories: [],
+      categorySearch: [],
     };
+  }
+
+  async componentDidMount() {
+    const cat = await getCategories();
+    this.setState({ categories: cat });
   }
 
   onBtnClick = async () => {
@@ -28,13 +35,34 @@ class Home extends React.Component {
     });
   };
 
+  categorySearchItems = async ({ target }) => {
+    const { name } = target;
+    const foundItems = await getProductsFromCategoryAndQuery(name.toString());
+    this.setState({ items: [], categorySearch: foundItems });
+  };
+
   render() {
     const { history } = this.props;
-    const { searchText, items, nothing } = this.state;
+    const { categories, searchText, items, nothing, categorySearch } = this.state;
     const { results } = items;
+    let { results: resul } = categorySearch;
+    if (!resul) resul = [];
     return (
       <section>
         <Header history={ history } />
+        <div>
+          { categories.map((obj) => (
+            <button
+              onClick={ this.categorySearchItems }
+              name={ obj.id }
+              type="button"
+              key={ obj.id }
+              data-testid="category"
+            >
+              { obj.name }
+            </button>
+          )) }
+        </div>
         <input
           data-testid="query-input"
           type="text"
@@ -71,6 +99,18 @@ class Home extends React.Component {
               </div>
             )
         }
+        { resul.length > 0
+          && (
+            <div className="itemDiv">
+              { resul.map((obj) => (
+                <div data-testid="product" className="item" key={ obj.id }>
+                  <img src={ obj.thumbnail } alt={ obj.title } />
+                  <h3>{ obj.title }</h3>
+                  <h2>{ Number(obj.price.toFixed(2)) }</h2>
+                </div>
+              ))}
+            </div>
+          )}
         { nothing !== '' && <h3>{ nothing }</h3> }
       </section>
     );
