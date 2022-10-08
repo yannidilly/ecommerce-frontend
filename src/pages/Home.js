@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
@@ -90,11 +91,17 @@ class Home extends React.Component {
             : (
               <div className="itemDiv">
                 {results.map((obj) => (
-                  <div data-testid="product" className="item" key={ obj.id }>
-                    <img src={ obj.thumbnail } alt={ obj.title } />
-                    <h3>{ obj.title }</h3>
-                    <h2>{ Number(obj.price.toFixed(2)) }</h2>
-                  </div>
+                  <Link
+                    data-testid="product-detail-link"
+                    to={ `/products/${obj.id}` }
+                    key={ obj.id }
+                  >
+                    <div data-testid="product" className="item">
+                      <img src={ obj.thumbnail } alt={ obj.title } />
+                      <h3>{ obj.title }</h3>
+                      <h2>{ `R$ ${obj.price.toFixed(2)}` }</h2>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )
@@ -103,11 +110,17 @@ class Home extends React.Component {
           && (
             <div className="itemDiv">
               { resul.map((obj) => (
-                <div data-testid="product" className="item" key={ obj.id }>
-                  <img src={ obj.thumbnail } alt={ obj.title } />
-                  <h3>{ obj.title }</h3>
-                  <h2>{ Number(obj.price.toFixed(2)) }</h2>
-                </div>
+                <Link
+                  data-testid="product-detail-link"
+                  to={ `/products/${obj.id}` }
+                  key={ obj.id }
+                >
+                  <div data-testid="product" className="item" key={ obj.id }>
+                    <img src={ obj.thumbnail } alt={ obj.title } />
+                    <h3>{ obj.title }</h3>
+                    <h2>{ `R$ ${obj.price.toFixed(2)}` }</h2>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
