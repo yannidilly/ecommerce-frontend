@@ -13,6 +13,7 @@ class Home extends React.Component {
       nothing: '',
       categories: [],
       categorySearch: [],
+      savedItems: [],
     };
   }
 
@@ -20,6 +21,28 @@ class Home extends React.Component {
     const cat = await getCategories();
     this.setState({ categories: cat });
   }
+
+  componentDidUpdate() {
+    const { savedItems } = this.state;
+    if (savedItems.length > 0) {
+      localStorage.setItem('cartItems', JSON.stringify(savedItems));
+    }
+  }
+
+  btnCartClick = ({ target }) => {
+    const { categorySearch, items } = this.state;
+    const { name } = target;
+    if (categorySearch.results) {
+      const itemSaved = categorySearch.results.filter((obj) => obj.id === name);
+      return this.setState((prev) => ({
+        savedItems: [...prev.savedItems, itemSaved[0]],
+      }));
+    }
+    const searchSaved = items.results.filter((obj) => obj.id === name);
+    this.setState((prev) => ({
+      savedItems: [...prev.savedItems, searchSaved[0]],
+    }));
+  };
 
   onBtnClick = async () => {
     const { searchText } = this.state;
@@ -91,17 +114,28 @@ class Home extends React.Component {
             : (
               <div className="itemDiv">
                 {results.map((obj) => (
-                  <Link
-                    data-testid="product-detail-link"
-                    to={ `/products/${obj.id}` }
+                  <div
                     key={ obj.id }
+                    data-testid="product"
+                    className="item"
                   >
-                    <div data-testid="product" className="item">
+                    <Link
+                      data-testid="product-detail-link"
+                      to={ `/products/${obj.id}` }
+                    >
                       <img src={ obj.thumbnail } alt={ obj.title } />
                       <h3>{ obj.title }</h3>
                       <h2>{ `R$ ${obj.price.toFixed(2)}` }</h2>
-                    </div>
-                  </Link>
+                    </Link>
+                    <button
+                      data-testid="product-add-to-cart"
+                      onClick={ this.btnCartClick }
+                      name={ obj.id }
+                      type="button"
+                    >
+                      Adicionar ao carrinho
+                    </button>
+                  </div>
                 ))}
               </div>
             )
@@ -110,17 +144,24 @@ class Home extends React.Component {
           && (
             <div className="itemDiv">
               { resul.map((obj) => (
-                <Link
-                  data-testid="product-detail-link"
-                  to={ `/products/${obj.id}` }
-                  key={ obj.id }
-                >
-                  <div data-testid="product" className="item" key={ obj.id }>
+                <div data-testid="product" className="item" key={ obj.id }>
+                  <Link
+                    data-testid="product-detail-link"
+                    to={ `/products/${obj.id}` }
+                  >
                     <img src={ obj.thumbnail } alt={ obj.title } />
                     <h3>{ obj.title }</h3>
                     <h2>{ `R$ ${obj.price.toFixed(2)}` }</h2>
-                  </div>
-                </Link>
+                  </Link>
+                  <button
+                    data-testid="product-add-to-cart"
+                    name={ obj.id }
+                    onClick={ this.btnCartClick }
+                    type="button"
+                  >
+                    Adicionar ao carrinho
+                  </button>
+                </div>
               ))}
             </div>
           )}
