@@ -14,9 +14,21 @@ class ShoppingCart extends React.Component {
     this.setState({ cart: [...cartSaved] });
   }
 
+  remove = (obj) => {
+    const cartSaved = JSON.parse(localStorage.getItem('cartItems'));
+    const clickedItem = cartSaved.find((item) => item.id === obj.id);
+    const clickedItemIndex = cartSaved.indexOf(clickedItem);
+    cartSaved.splice(clickedItemIndex, 1);
+    this.setState(
+      ({ cart: cartSaved }),
+      () => localStorage.setItem('cartItems', JSON.stringify(cartSaved)),
+    );
+  };
+
   quantityManipulate = (obj, action) => {
     const { cart } = this.state;
     if (action === 'decrease') {
+      // add min = 1
       obj.quantity -= 1;
     }
     if (action === 'increase') {
@@ -40,6 +52,13 @@ class ShoppingCart extends React.Component {
             : (
               cart.map((obj) => (
                 <div className="cartItemDiv" key={ obj.id }>
+                  <button
+                    type="button"
+                    data-testid="remove-product"
+                    onClick={ () => this.remove(obj) }
+                  >
+                    Remover
+                  </button>
                   <div>
                     <img src={ obj.thumbnail } alt={ obj.title } />
                   </div>
