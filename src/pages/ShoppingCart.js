@@ -14,6 +14,22 @@ class ShoppingCart extends React.Component {
     this.setState({ cart: [...cartSaved] });
   }
 
+  quantityManipulate = (obj, action) => {
+    const { cart } = this.state;
+    if (action === 'decrease') {
+      obj.quantity -= 1;
+    }
+    if (action === 'increase') {
+      obj.quantity += 1;
+    }
+    const cartItemsFiltered = cart
+      .filter((item, index) => cart.indexOf(item) === index);
+    this.setState(
+      ({ cart: cartItemsFiltered }),
+      () => localStorage.setItem('cartItems', JSON.stringify(cart)),
+    );
+  };
+
   render() {
     const { cart } = this.state;
     return (
@@ -29,7 +45,23 @@ class ShoppingCart extends React.Component {
                   </div>
                   <div>
                     <h4 data-testid="shopping-cart-product-name">{obj.title}</h4>
-                    <p data-testid="shopping-cart-product-quantity">1</p>
+                    <div className="quantity-item-manipulate">
+                      <button
+                        data-testid="product-decrease-quantity"
+                        type="button"
+                        onClick={ () => this.quantityManipulate(obj, 'decrease') }
+                      >
+                        Diminuir
+                      </button>
+                      <p data-testid="shopping-cart-product-quantity">{obj.quantity}</p>
+                      <button
+                        data-testid="product-increase-quantity"
+                        type="button"
+                        onClick={ () => this.quantityManipulate(obj, 'increase') }
+                      >
+                        Aumentar
+                      </button>
+                    </div>
                   </div>
                   <div>
                     <h3>{ `R$ ${obj.price}` }</h3>

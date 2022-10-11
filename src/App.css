@@ -23,3 +23,7 @@ body {
 .cartItemDiv div {
   margin-left: 25px;
 }
+
+.quantity-item-manipulate {
+  display: flex;
+}

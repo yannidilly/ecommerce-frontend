@@ -24,8 +24,10 @@ class Home extends React.Component {
 
   componentDidUpdate() {
     const { savedItems } = this.state;
+    const savedItemsFiltered = savedItems
+      .filter((item, index) => savedItems.indexOf(item) === index); // o indexOf só retorna o index da primeira aparição do elemento, então não importa quantos tenha, o retorno sempre será apenas um
     if (savedItems.length > 0) {
-      localStorage.setItem('cartItems', JSON.stringify(savedItems));
+      localStorage.setItem('cartItems', JSON.stringify(savedItemsFiltered));
     }
   }
 
@@ -34,9 +36,17 @@ class Home extends React.Component {
     const { name } = target;
     if (categorySearch.results) {
       const itemSaved = categorySearch.results.filter((obj) => obj.id === name);
-      return this.setState((prev) => ({
+      if (!(itemSaved[0].quantity)) {
+        itemSaved[0].quantity = 1;
+        return this.setState((prev) => ({
+          savedItems: [...prev.savedItems, itemSaved[0]],
+        }));
+      }
+      itemSaved[0].quantity += 1;
+      this.setState((prev) => ({
         savedItems: [...prev.savedItems, itemSaved[0]],
       }));
+      return;
     }
     const searchSaved = items.results.filter((obj) => obj.id === name);
     this.setState((prev) => ({
