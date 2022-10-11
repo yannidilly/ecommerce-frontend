@@ -27,7 +27,7 @@ class ShoppingCart extends React.Component {
 
   quantityManipulate = (obj, action) => {
     const { cart } = this.state;
-    if (action === 'decrease') {
+    if (action === 'decrease' && obj.quantity > 1) {
       // add min = 1
       obj.quantity -= 1;
     }
