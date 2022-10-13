@@ -165,13 +165,17 @@ class Home extends React.Component {
                     <h3>{ obj.title }</h3>
                     <h2>{ `R$ ${obj.price.toFixed(2)}` }</h2>
                   </Link>
+                  {
+                    (obj.shipping.free_shipping)
+                      ? <p data-testid="free-shipping">Frete Grátis</p> : null
+                  }
                   <button
                     data-testid="product-add-to-cart"
                     name={ obj.id }
                     onClick={ this.btnCartClick }
                     type="button"
                   >
-                    Adicionar ao carrinh
+                    Adicionar ao carrinho
                   </button>
                 </div>
               ))}
