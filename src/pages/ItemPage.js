@@ -42,8 +42,7 @@ class ItemPage extends React.Component {
     const { match: { params: { id } } } = this.props;
     const pageItem = await getProductById(id);
     const {
-      seller_address: { city: { name } },
-      shipping: { free_shipping: fS },
+      seller_address: { city: { name } }, shipping: { free_shipping: fS },
     } = pageItem;
     let { condition } = pageItem;
     if (condition === 'new') {
@@ -53,10 +52,7 @@ class ItemPage extends React.Component {
     }
     condition = 'Usado';
     this.setState({
-      product: pageItem,
-      sellerLocal: name,
-      condicao: condition,
-      freeShip: fS,
+      product: pageItem, sellerLocal: name, condicao: condition, freeShip: fS,
     });
   };
 
@@ -67,12 +63,15 @@ class ItemPage extends React.Component {
 
   cartBtnClick = () => {
     const { product, allItens } = this.state;
-    this.setState({
-      allItens: [...allItens, product],
-    });
+    if (!(product.quantity)) {
+      product.quantity = 1;
+      return this.setState({ allItens: [...allItens, product] });
+    }
+    product.quantity += 1;
+    this.setState({ allItens: [...allItens, product] });
   };
 
-  cardBtnClick = () => {
+  shoppingCartBtnClick = () => {
     const { history } = this.props;
     history.push('/shoppingCart');
   };
@@ -89,11 +88,7 @@ class ItemPage extends React.Component {
     const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+?$/i;
     if (regex.test(email) && note !== '') {
       return this.setState({
-        ratings: [...ratings, saveRating],
-        email: '',
-        text: '',
-        isPostable: '',
-        note: '',
+        ratings: [...ratings, saveRating], email: '', text: '', isPostable: '', note: '',
       });
     }
     this.setState({
@@ -110,7 +105,7 @@ class ItemPage extends React.Component {
         <button
           data-testid="shopping-cart-button"
           type="button"
-          onClick={ this.cardBtnClick }
+          onClick={ this.shoppingCartBtnClick }
         >
           ShoppingCart
         </button>
@@ -232,14 +227,8 @@ class ItemPage extends React.Component {
 }
 
 ItemPage.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
+  history: PropTypes.shape({ push: PropTypes.func }),
+  match: PropTypes.shape({ params: PropTypes.shape({ id: PropTypes.string }) }),
+}.isRequired;
 
 export default ItemPage;
