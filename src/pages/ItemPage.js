@@ -10,10 +10,28 @@ class ItemPage extends React.Component {
       sellerLocal: '',
       condicao: '',
       freeShip: '',
+      email: '',
+      note: '',
+      text: '',
+      ratings: [],
+      isPostable: '',
     });
   }
 
   async componentDidMount() {
+    const { match: { params: { id } } } = this.props;
+    await this.infoHandler();
+    const savedRatings = JSON.parse(localStorage.getItem(id));
+    if (savedRatings) this.setState({ ratings: [...savedRatings] });
+  }
+
+  componentDidUpdate() {
+    const { ratings } = this.state;
+    const { match: { params: { id } } } = this.props;
+    localStorage.setItem(id, JSON.stringify(ratings));
+  }
+
+  infoHandler = async () => {
     const { match: { params: { id } } } = this.props;
     const pageItem = await getProductById(id);
     const {
@@ -37,15 +55,58 @@ class ItemPage extends React.Component {
       condicao: condition,
       freeShip: fS,
     });
-  }
+  };
+
+  handleInput = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value });
+  };
 
   cartBtnClick = () => {
     const { history } = this.props;
     history.push('/shoppingCart');
   };
 
+  handleRadio = ({ target }) => {
+    const { value } = target;
+    this.setState({ note: value });
+  };
+
+  clickSendBtn = (e) => {
+    e.preventDefault();
+    const { ratings, email, note, text } = this.state;
+    const saveRating = { email, text, note };
+    const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+?$/i;
+    if (regex.test(email) && note !== '') {
+      return this.setState({
+        ratings: [...ratings, saveRating],
+        email: '',
+        text: '',
+        isPostable: '',
+        note: '',
+      });
+    }
+    this.setState({
+      ratings: [...ratings],
+      email: '',
+      text: '',
+      isPostable: 'Campos inválidos',
+      note: '',
+    });
+  };
+
   render() {
-    const { product, sellerLocal, condicao, freeShip } = this.state;
+    const {
+      text,
+      product,
+      sellerLocal,
+      condicao,
+      freeShip,
+      email,
+      ratings,
+      isPostable,
+      note,
+    } = this.state;
     return (
       <div>
         <div>
@@ -73,6 +134,89 @@ class ItemPage extends React.Component {
             Adicionar ao carrinho
           </button>
         </div>
+        <form>
+          <input
+            name="email"
+            onChange={ this.handleInput }
+            value={ email }
+            type="text"
+            data-testid="product-detail-email"
+          />
+          <input
+            data-testid="1-rating"
+            value="1"
+            type="radio"
+            name="rating"
+            checked={ note === '1' }
+            onChange={ this.handleRadio }
+          />
+          {' '}
+          1
+          <input
+            data-testid="2-rating"
+            value="2"
+            type="radio"
+            name="rating"
+            checked={ note === '2' }
+            onChange={ this.handleRadio }
+          />
+          {' '}
+          2
+          <input
+            data-testid="3-rating"
+            value="3"
+            type="radio"
+            name="rating"
+            checked={ note === '3' }
+            onChange={ this.handleRadio }
+          />
+          {' '}
+          3
+          <input
+            data-testid="4-rating"
+            value="4"
+            type="radio"
+            name="rating"
+            checked={ note === '4' }
+            onChange={ this.handleRadio }
+          />
+          {' '}
+          4
+          <input
+            data-testid="5-rating"
+            value="5"
+            type="radio"
+            name="rating"
+            checked={ note === '5' }
+            onChange={ this.handleRadio }
+          />
+          {' '}
+          5
+          <textarea
+            onChange={ this.handleInput }
+            name="text"
+            value={ text }
+            data-testid="product-detail-evaluation"
+          />
+          <button
+            data-testid="submit-review-btn"
+            onClick={ this.clickSendBtn }
+            type="submit"
+          >
+            Avaliar
+          </button>
+        </form>
+        { isPostable !== '' && <h4 data-testid="error-msg">{ isPostable }</h4> }
+        { ratings.length > 0
+          && (
+            ratings.map((obj, index) => (
+              <div key={ index }>
+                <h4 data-testid="review-card-email">{ obj.email }</h4>
+                <h3 data-testid="review-card-rating">{ obj.note }</h3>
+                <p data-testid="review-card-evaluation">{ obj.text }</p>
+              </div>
+            ))
+          )}
       </div>
     );
   }
