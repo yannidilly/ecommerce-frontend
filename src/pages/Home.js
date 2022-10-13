@@ -18,7 +18,9 @@ class Home extends React.Component {
   }
 
   async componentDidMount() {
+    const save = localStorage.getItem('cartItems');
     const cat = await getCategories();
+    if (!save) this.setState({ categories: cat });
     this.setState({ categories: cat });
   }
 
