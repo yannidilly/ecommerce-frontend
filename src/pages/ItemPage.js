@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { getProductById } from '../services/api';
 
 class ItemPage extends React.Component {
@@ -32,9 +31,11 @@ class ItemPage extends React.Component {
   }
 
   componentDidUpdate() {
+    const { allItens } = this.state;
     const { ratings } = this.state;
     const { match: { params: { id } } } = this.props;
     localStorage.setItem(id, JSON.stringify(ratings));
+    localStorage.setItem('cartItems', JSON.stringify(allItens));
   }
 
   infoHandler = async () => {
@@ -48,11 +49,7 @@ class ItemPage extends React.Component {
     if (condition === 'new') {
       condition = 'Novo';
       return this.setState({
-        product: pageItem,
-        sellerLocal: name,
-        condicao: condition,
-        freeShip: fS,
-      });
+        product: pageItem, sellerLocal: name, condicao: condition, freeShip: fS });
     }
     condition = 'Usado';
     this.setState({
@@ -68,18 +65,11 @@ class ItemPage extends React.Component {
     this.setState({ [name]: value });
   };
 
-  componentDidUpdate() {
-    const { allItens } = this.state;
-    localStorage.setItem('cartItems', JSON.stringify(allItens));
-  }
-
   cartBtnClick = () => {
     const { product, allItens } = this.state;
     this.setState({
       allItens: [...allItens, product],
     });
-    // history.push('/shoppingCart');
-    localStorage.setItem('TERTULIO', JSON.stringify(product));
   };
 
   cardBtnClick = () => {
@@ -107,25 +97,13 @@ class ItemPage extends React.Component {
       });
     }
     this.setState({
-      ratings: [...ratings],
-      email,
-      text,
-      isPostable: 'Campos inválidos',
-      note,
+      ratings: [...ratings], email, text, isPostable: 'Campos inválidos', note,
     });
   };
 
   render() {
     const {
-      text,
-      product,
-      sellerLocal,
-      condicao,
-      freeShip,
-      email,
-      ratings,
-      isPostable,
-      note,
+      text, product, sellerLocal, condicao, freeShip, email, ratings, isPostable, note,
     } = this.state;
     return (
       <div>
@@ -141,7 +119,6 @@ class ItemPage extends React.Component {
             data-testid="product-detail-name"
           >
             { `${product.title}` }
-
           </h2>
           <h1 data-testid="product-detail-price">{ `R$ ${product.price}` }</h1>
         </div>
