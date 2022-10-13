@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '/home/filipe/sd-025-b-project-frontend-online-store/src/services/header.css';
 
 class Header extends React.Component {
   onClickButton = () => {
@@ -9,7 +10,10 @@ class Header extends React.Component {
 
   render() {
     return (
-      <section>
+      <section className="header-section">
+        <div className="image-box">
+          <img className="logo" src="https://logodownload.org/wp-content/uploads/2016/08/mercado-livre-logo-1-1.png" alt="logo mercado livre" />
+        </div>
         <button
           data-testid="shopping-cart-button"
           type="button"
