@@ -88,10 +88,10 @@ class ItemPage extends React.Component {
     }
     this.setState({
       ratings: [...ratings],
-      email: '',
-      text: '',
+      email,
+      text,
       isPostable: 'Campos inválidos',
-      note: '',
+      note,
     });
   };
 
