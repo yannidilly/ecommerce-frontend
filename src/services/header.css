@@ -1,25 +1,23 @@
 .header-section {
-  margin-left: 4%;
+  background-color: yellow;
+  background-image: url('https://logodownload.org/wp-content/uploads/2016/08/mercado-livre-logo-1-1.png');
   border: 1px solid black;
   display: flex;
-  justify-content: inline-end;
-  /* align-items: center;
-    flex-direction: column; */
-  width: 175vh;
   height: 100px;
-  background-color: yellow;
-  background-image: url("https://logodownload.org/wp-content/uploads/2016/08/mercado-livre-logo-1-1.png");
+  justify-content: inline-end;
+  margin-left: 4%;
+  width: 175vh;
 }
 
 .image-box {
   border: 1px solid red;
-  width: 175vh;
-  height: 100px;
   display: flex;
+  height: 100px;
   justify-content: center;
+  width: 175vh;
 }
 
 .logo {
-  width: 80px;
   height: 80px;
+  width: 80px;
 }
