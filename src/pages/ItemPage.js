@@ -10,6 +10,7 @@ class ItemPage extends React.Component {
       sellerLocal: '',
       condicao: '',
       freeShip: '',
+      allItens: [],
       email: '',
       note: '',
       text: '',
@@ -19,6 +20,10 @@ class ItemPage extends React.Component {
   }
 
   async componentDidMount() {
+    const itens = JSON.parse(localStorage.getItem('cartItems')); // transforma o value do storage em array, ele está guardado como string.
+    if (itens) {
+      this.setState({ allItens: [...itens] });
+    }
     const { match: { params: { id } } } = this.props;
     await this.infoHandler();
     const savedRatings = JSON.parse(localStorage.getItem(id));
@@ -26,34 +31,28 @@ class ItemPage extends React.Component {
   }
 
   componentDidUpdate() {
+    const { allItens } = this.state;
     const { ratings } = this.state;
     const { match: { params: { id } } } = this.props;
     localStorage.setItem(id, JSON.stringify(ratings));
+    localStorage.setItem('cartItems', JSON.stringify(allItens));
   }
 
   infoHandler = async () => {
     const { match: { params: { id } } } = this.props;
     const pageItem = await getProductById(id);
     const {
-      seller_address: { city: { name } },
-      shipping: { free_shipping: fS },
+      seller_address: { city: { name } }, shipping: { free_shipping: fS },
     } = pageItem;
     let { condition } = pageItem;
     if (condition === 'new') {
       condition = 'Novo';
       return this.setState({
-        product: pageItem,
-        sellerLocal: name,
-        condicao: condition,
-        freeShip: fS,
-      });
+        product: pageItem, sellerLocal: name, condicao: condition, freeShip: fS });
     }
     condition = 'Usado';
     this.setState({
-      product: pageItem,
-      sellerLocal: name,
-      condicao: condition,
-      freeShip: fS,
+      product: pageItem, sellerLocal: name, condicao: condition, freeShip: fS,
     });
   };
 
@@ -63,6 +62,16 @@ class ItemPage extends React.Component {
   };
 
   cartBtnClick = () => {
+    const { product, allItens } = this.state;
+    if (!(product.quantity)) {
+      product.quantity = 1;
+      return this.setState({ allItens: [...allItens, product] });
+    }
+    product.quantity += 1;
+    this.setState({ allItens: [...allItens, product] });
+  };
+
+  shoppingCartBtnClick = () => {
     const { history } = this.props;
     history.push('/shoppingCart');
   };
@@ -79,38 +88,33 @@ class ItemPage extends React.Component {
     const regex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+?$/i;
     if (regex.test(email) && note !== '') {
       return this.setState({
-        ratings: [...ratings, saveRating],
-        email: '',
-        text: '',
-        isPostable: '',
-        note: '',
+        ratings: [...ratings, saveRating], email: '', text: '', isPostable: '', note: '',
       });
     }
     this.setState({
-      ratings: [...ratings],
-      email,
-      text,
-      isPostable: 'Campos inválidos',
-      note,
+      ratings: [...ratings], email, text, isPostable: 'Campos inválidos', note,
     });
   };
 
   render() {
     const {
-      text,
-      product,
-      sellerLocal,
-      condicao,
-      freeShip,
-      email,
-      ratings,
-      isPostable,
-      note,
+      text, product, sellerLocal, condicao, freeShip, email, ratings, isPostable, note,
     } = this.state;
     return (
       <div>
+        <button
+          data-testid="shopping-cart-button"
+          type="button"
+          onClick={ this.shoppingCartBtnClick }
+        >
+          ShoppingCart
+        </button>
         <div>
-          <h2 data-testid="product-detail-name">{ `${product.title}` }</h2>
+          <h2
+            data-testid="product-detail-name"
+          >
+            { `${product.title}` }
+          </h2>
           <h1 data-testid="product-detail-price">{ `R$ ${product.price}` }</h1>
         </div>
         <div>
@@ -127,9 +131,9 @@ class ItemPage extends React.Component {
           <p>{ `Estado: ${condicao}` }</p>
           { freeShip && <p>Entrega grátis!</p> }
           <button
-            onClick={ this.cartBtnClick }
+            onClick={ this.cartBtnClick } // BOTAO DA TELA DE INFORMACAO DETALHADA DO PRODUTO
             type="button"
-            data-testid="shopping-cart-button"
+            data-testid="product-detail-add-to-cart"
           >
             Adicionar ao carrinho
           </button>
@@ -223,14 +227,8 @@ class ItemPage extends React.Component {
 }
 
 ItemPage.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-};
+  history: PropTypes.shape({ push: PropTypes.func }),
+  match: PropTypes.shape({ params: PropTypes.shape({ id: PropTypes.string }) }),
+}.isRequired;
 
 export default ItemPage;
