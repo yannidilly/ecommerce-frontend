@@ -1,18 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class ShoppingCart extends React.Component {
   constructor() {
     super();
     this.state = {
       cart: [],
+      price: 0,
     };
   }
 
   componentDidMount() {
     const cartSaved = JSON.parse(localStorage.getItem('cartItems'));
     if (!cartSaved) return;
-    this.setState({ cart: [...cartSaved] });
+    this.setState({ cart: [...cartSaved] }, () => this.checkPrice());
   }
+
+  checkPrice = () => {
+    const { cart } = this.state;
+    let totalPrice = 0;
+    cart.forEach((obj) => {
+      const itemQuantity = obj.quantity;
+      totalPrice += (Number(obj.price.toFixed(2)) * itemQuantity);
+    });
+    this.setState((prev) => ({
+      price: (prev.price + totalPrice),
+    }));
+  };
 
   remove = (obj) => {
     const cartSaved = JSON.parse(localStorage.getItem('cartItems'));
@@ -27,23 +41,31 @@ class ShoppingCart extends React.Component {
 
   quantityManipulate = (obj, action) => {
     const { cart } = this.state;
+    let value = 0;
     if (action === 'decrease' && obj.quantity > 1) {
       // add min = 1
       obj.quantity -= 1;
+      value -= obj.price;
     }
     if (action === 'increase') {
       obj.quantity += 1;
+      value += obj.price;
     }
     const cartItemsFiltered = cart
       .filter((item, index) => cart.indexOf(item) === index);
     this.setState(
-      ({ cart: cartItemsFiltered }),
+      (prev) => ({ cart: cartItemsFiltered, price: (prev.price + value) }),
       () => localStorage.setItem('cartItems', JSON.stringify(cart)),
     );
   };
 
+  finalBtnClick = () => {
+    const { history } = this.props;
+    history.push('/shoppingCart/checkout');
+  };
+
   render() {
-    const { cart } = this.state;
+    const { cart, price } = this.state;
     return (
       <div>
         {
@@ -89,9 +111,28 @@ class ShoppingCart extends React.Component {
               ))
             )
         }
+        { cart.length > 0
+          && (
+            <>
+              <p>{ `Valor da compra: ${price}` }</p>
+              <button
+                data-testid="checkout-products"
+                onClick={ this.finalBtnClick }
+                type="button"
+              >
+                Finalizar compra
+              </button>
+            </>
+          )}
       </div>
     );
   }
 }
+
+ShoppingCart.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default ShoppingCart;

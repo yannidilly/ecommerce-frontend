@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '/home/filipe/sd-025-b-project-frontend-online-store/src/services/header.css';
+import '../services/header.css';
 
 class Header extends React.Component {
   onClickButton = () => {

@@ -171,7 +171,7 @@ class Home extends React.Component {
                     onClick={ this.btnCartClick }
                     type="button"
                   >
-                    Adicionar ao carrinh
+                    Adicionar ao carrinho
                   </button>
                 </div>
               ))}
