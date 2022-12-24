@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiko&family=Arsenal&family=Karla:wght@300&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +12,15 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+:root {
+  --light: #dad29b;
+  --primary-color: #e3f2f7;
+  --secundary-color: #505458;
+  --dark: #0c0c10;
+
+  --title: 'Amiko', sans-serif;
+  --sub-title: 'Arsenal', sans-serif;
+  --text: 'Karla', sans-serif;
 }
