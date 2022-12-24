@@ -1,19 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiko&family=Arsenal&family=Karla:wght@300&display=swap');
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 :root {
   --light: #dad29b;
   --primary-color: #e3f2f7;
@@ -23,4 +9,22 @@ code {
   --title: 'Amiko', sans-serif;
   --sub-title: 'Arsenal', sans-serif;
   --text: 'Karla', sans-serif;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-family: var(--title);
+}
+
+h2, h3, h4, h5 {
+  font-family: var(--sub-title);
+}
+
+p {
+  font-family: var(--text);
 }
